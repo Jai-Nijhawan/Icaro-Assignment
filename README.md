@@ -12,7 +12,7 @@ The app successfully fetches and displays recent malware threats.
 
 | Home Screen | Threat List |
 |------------|------------|
-| ![Home](screenshots/1.png) | ![Threats](screenshots/2.png) |
+| ![Home](Screenshots/1.png) | ![Threats](Screenshots/2.png) |
 
 ---
 
@@ -21,7 +21,7 @@ The app shows a loading indicator while fetching the latest threats.
 
 | Loading Screen |
 |---------------|
-| ![Loading](screenshots/3.png) |
+| ![Loading](Screenshots/3.png) |
 
 ---
 
@@ -30,7 +30,7 @@ If the API request fails, the app displays an error message.
 
 | Error Screen |
 |-------------|
-| ![Error](screenshots/4.png) |
+| ![Error](Screenshots/4.png) |
 
 ---
 
