@@ -8,12 +8,12 @@
 import Foundation
 
 protocol ThreatServiceProtocol {
-    func fetchThreats(completion: @escaping (Result<ThreatListModel, NetworkError>) -> Void)
+    func fetchThreats(completion: @escaping (Result<ThreatListModel, NetworkError>) -> Void, limit: Int)
 }
 
 class ThreatService: ThreatServiceProtocol {
-    func fetchThreats(completion: @escaping (Result<ThreatListModel, NetworkError>) -> Void) {
-        let url = APIEndpoint.recentThreats(limit: 10).url
+    func fetchThreats(completion: @escaping (Result<ThreatListModel, NetworkError>) -> Void, limit: Int) {
+        let url = APIEndpoint.recentThreats(limit: limit).url
         NetworkManager.shared.fetchData(from: url, completion: completion)
     }
 }
