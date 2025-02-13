@@ -23,7 +23,10 @@ struct ThreatModel: Codable {
     let id: Int
     let urlhausReference: String
     let url: String
-    let urlStatus, host, dateAdded, threat: String
+    let urlStatus,
+        host,
+        dateAdded,
+        threat: String
     let blacklists: Blacklists
     let reporter, larted: String
     let tags: [String]?
@@ -35,7 +38,11 @@ struct ThreatModel: Codable {
         case urlStatus = "url_status"
         case host
         case dateAdded = "date_added"
-        case threat, blacklists, reporter, larted, tags
+        case threat,
+             blacklists,
+             reporter,
+             larted,
+             tags
     }
 }
 
