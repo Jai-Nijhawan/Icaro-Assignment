@@ -18,12 +18,7 @@ class NetworkManager {
     
     private init() {}
 
-    func fetchData<T: Codable>(from urlString: String, completion: @escaping (Result<T, NetworkError>) -> Void) {
-        guard let url = URL(string: urlString) else {
-            completion(.failure(.invalidURL))
-            return
-        }
-
+    func fetchData<T: Codable>(from url: URL, completion: @escaping (Result<T, NetworkError>) -> Void) {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let _ = error {
                 completion(.failure(.requestFailed))
