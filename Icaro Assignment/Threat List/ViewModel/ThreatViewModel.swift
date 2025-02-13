@@ -13,27 +13,28 @@ protocol ThreatViewModelDelegate: AnyObject {
 }
 
 protocol ThreatViewModelProtocol {
-    func fetchThreats(limit: Int?)
+    func fetchThreats()
+    var delegate: ThreatViewModelDelegate? { get set }
 }
 
 final class ThreatViewModel: ThreatViewModelProtocol {
     
     // MARK: - Properties
     private let threatService: ThreatServiceProtocol
-    private let threatLimit: Int
+    private let threatLimit: Int?
     weak var delegate: ThreatViewModelDelegate?
     
     private(set) var threats: [ThreatModel] = []
     
     // MARK: - Initializer
-    init(threatService: ThreatServiceProtocol, threatLimit: Int = 10) {
+    init(threatService: ThreatServiceProtocol, threatLimit: Int? = nil) {
         self.threatService = threatService
         self.threatLimit = threatLimit
     }
     
     // MARK: - Public Methods
-    func fetchThreats(limit: Int? = nil) {
-        let fetchLimit = limit ?? threatLimit
+    func fetchThreats() {
+        let fetchLimit = threatLimit ?? 10
         threatService.fetchThreats(limit: fetchLimit) { [weak self] result in
             DispatchQueue.main.async {
                 self?.handleFetchResult(result)
@@ -46,7 +47,7 @@ final class ThreatViewModel: ThreatViewModelProtocol {
         switch result {
         case .success(let threatListModel):
             self.threats = threatListModel.urls
-            delegate?.didUpdateThreats()
+            delegate?.didFail(with: NetworkError.requestFailed)
             
             // Print the response data
             print("Fetched \(threatListModel.urls.count) threats:")
