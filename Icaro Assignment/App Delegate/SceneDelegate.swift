@@ -15,11 +15,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let window = UIWindow(windowScene: windowScene)
-        let threatListViewController = ThreatListViewController()
-        window.rootViewController = threatListViewController
-        window.makeKeyAndVisible()
-        self.window = window
+        let threatService = ThreatService()
+        let viewModel = ThreatViewModel(threatService: threatService)
+        let viewController = ThreatListViewController(viewModel: viewModel)
+
+        viewModel.delegate = viewController
+
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = UINavigationController(rootViewController: viewController)
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
