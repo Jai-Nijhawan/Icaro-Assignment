@@ -49,16 +49,8 @@ final class ThreatViewModel: ThreatViewModelProtocol {
         case .success(let threatListModel):
             self.threats = threatListModel.urls
             delegate?.didUpdateThreats()
-            
-            // Print the response data
-            print("Fetched \(threatListModel.urls.count) threats:")
-            for threat in threatListModel.urls {
-                print("- \(threat.url) | Status: \(threat.urlStatus) | Threat: \(threat.threat)")
-            }
-            
         case .failure(let error):
             delegate?.didFail(with: error)
-            print("Error fetching threats: \(error)")
         }
     }
 }

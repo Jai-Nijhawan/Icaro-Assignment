@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ThreatListViewController: UIViewController {
+final class ThreatListViewController: UIViewController {
     
     // MARK: - Properties
     private var viewModel: ThreatViewModelProtocol
@@ -49,12 +49,16 @@ class ThreatListViewController: UIViewController {
     }()
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(ThreatCell.self, forCellReuseIdentifier: ThreatCell.identifier)
+        tableView.register(DeviceStatusCell.self, forCellReuseIdentifier: DeviceStatusCell.identifier)
+        tableView.register(ThreatListCell.self, forCellReuseIdentifier: ThreatListCell.identifier)
         tableView.isHidden = true  // Initially hidden until data is loaded
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.sectionHeaderTopPadding = 0
         return tableView
     }()
     
@@ -78,7 +82,7 @@ class ThreatListViewController: UIViewController {
     
     // MARK: - UI Setup
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.96, alpha: 1.00)
         
         view.addSubview(backButton)
         view.addSubview(headerLabel)
@@ -111,7 +115,7 @@ class ThreatListViewController: UIViewController {
     // MARK: - Fetch Data
     private func fetchThreats() {
         showLoadingState()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in  // 3-second delay for testing
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in  // 1-second delay for testing
             self?.viewModel.fetchThreats()
         }
     }
@@ -140,7 +144,7 @@ class ThreatListViewController: UIViewController {
     
     // MARK: - Button Actions
     @objc private func backButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -156,13 +160,13 @@ extension ThreatListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "infoCell")
-            cell.textLabel?.text = "Threat Data Overview"
-            cell.detailTextLabel?.text = "This list contains recent malware threats."
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: DeviceStatusCell.identifier, for: indexPath) as? DeviceStatusCell else {
+                return UITableViewCell()
+            }
             cell.selectionStyle = .none
             return cell
         } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ThreatCell.identifier, for: indexPath) as? ThreatCell else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ThreatListCell.identifier, for: indexPath) as? ThreatListCell else {
                 return UITableViewCell()
             }
             let threat = viewModel.threats[indexPath.row]
@@ -176,12 +180,10 @@ extension ThreatListViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: - ThreatViewModelDelegate
 extension ThreatListViewController: ThreatViewModelDelegate {
     func didUpdateThreats() {
-        print("Threat data updated successfully in ViewController.")
         showSuccessState()
     }
     
     func didFail(with error: NetworkError) {
-        print("Failed to fetch threats: \(error)")
         showFailureState()
     }
 }
